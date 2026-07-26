@@ -9,7 +9,13 @@ if not api_key:
 
 genai.configure(api_key=api_key)
 # استخدام نموذج جيميناي السريع لتوليد المقالات
-model = genai.GenerativeModel('gemini-1.5-flash')
+# اختيار النموذج المتاح تلقائياً لتجنب أخطاء 404
+for m in genai.list_models():
+    if 'generateContent' in m.supported_generation_methods:
+        model_name = m.name
+        break
+
+model = genai.GenerativeModel(model_name)
 
 # موضوع علمي جديد يتم توليده
 prompt = "اكتب مقالة علمية عميقة ومتقدمة باللغة العربية حول موضوع في الفيزياء النظرية أو الرياضيات المتقدمة (مثل ميكانيكا الكم، النسبية العامة، أو المعادلات التفاضلية). اجعل المقالة منسقة بحيث تتضمن عنواناً رئيسياً، مقدمة تحليلية، وجسماً للموضوع مع معادلات رياضية واضحة."
